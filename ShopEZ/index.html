@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShopEZ — Modern Shopping</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">shop<span>EZ.</span></div>
+  <nav class="nav" id="topNavigation"></nav>
+</header>
+
+<main id="entryView" class="wrap">
+  <section class="login-card">
+    <div class="eyebrow" style="color:#777">ShopEZ access</div>
+    <h2>Welcome to ShopEZ.</h2>
+    <p class="muted">Choose how you want to sign in.</p>
+    <div class="toolbar">
+      <button class="primary" style="width:100%" onclick="showView('customerLogin')">Customer Login</button>
+      <button class="small-btn" style="width:100%" onclick="showView('adminLogin')">Admin Login</button>
+    </div>
+  </section>
+</main>
+
+<main id="shopView" class="wrap">
+  <section class="hero">
+    <div><div class="eyebrow">New season · New essentials</div><h1>Everyday style.<br>Elevated.</h1><p>Discover considered essentials, clean silhouettes and everyday favourites. Find your next go-to piece at ShopEZ.</p><button class="primary lime" onclick="document.getElementById('productsSection').scrollIntoView({behavior:'smooth'})">Explore collection ↗</button></div>
+    <div class="hero-art" aria-label="Fashion illustration">◈</div>
+  </section>
+  <div class="section-head" id="productsSection"><div><div class="eyebrow" style="color:#777">The collection</div><h2>Shop the essentials</h2></div><span class="muted" id="productCount">Loading products…</span></div>
+  <div class="toolbar">
+    <input id="searchBox" class="field" placeholder="Search products…" oninput="renderProducts()">
+    <select id="categoryFilter" class="field" onchange="renderProducts()"><option value="">All categories</option></select>
+    <button class="small-btn" onclick="seedDemoProducts()">＋ Add 8 sample products</button>
+  </div>
+  <div id="productGrid" class="grid"></div>
+  <section id="cartPanel" class="panel hidden">
+    <div class="section-head" style="margin:0 0 15px"><h2>Your bag</h2><button class="small-btn" onclick="hideCart()">Continue shopping</button></div>
+    <div id="cartContents"></div>
+    <div class="product-foot"><strong id="cartTotal">Total: ₹0</strong><button class="primary" onclick="openCheckout()">Proceed to checkout</button></div>
+  </section>
+</main>
+
+<main id="loginView" class="wrap hidden">
+  <div class="login-card">
+    <div class="eyebrow" style="color:#777">Customer account</div>
+    <h2>Welcome, shopper.</h2>
+    <p class="muted">Enter any username and password to open the customer demo.</p>
+    <form onsubmit="customerLogin(event)">
+      <input id="customerUsername" class="field" autocomplete="username" placeholder="Username" required>
+      <input id="customerPassword" class="field" type="password" autocomplete="current-password" placeholder="Password" required>
+      <button class="primary" style="width:100%;margin-top:10px" type="submit">Login as customer</button>
+    </form>
+    <p class="muted" style="font-size:12px;margin-top:16px">Customer demo credentials are not stored or verified.</p>
+  </div>
+</main>
+
+<main id="adminLoginView" class="wrap hidden">
+  <div class="login-card">
+    <div class="eyebrow" style="color:#777">Restricted workspace</div>
+    <h2>Admin login.</h2>
+    <p class="muted">Sign in with the designated administrator credentials.</p>
+    <form onsubmit="adminLogin(event)">
+      <input id="adminUsername" class="field" type="email" autocomplete="username" placeholder="Admin email" required>
+      <input id="adminPassword" class="field" type="password" autocomplete="current-password" placeholder="Admin password" required>
+      <button class="primary" style="width:100%;margin-top:10px" type="submit">Login as admin</button>
+    </form>
+    <p class="muted" style="font-size:12px;margin-top:16px">Admin access is demo-only and must be secured before deployment.</p>
+  </div>
+</main>
+
+<main id="adminView" class="wrap hidden">
+  <div class="section-head" style="margin-top:0"><div><div class="eyebrow" style="color:#777">ShopEZ workspace</div><h2>Admin overview</h2><p class="muted">Manage your catalogue and review store activity.</p></div><button class="small-btn" onclick="showView('shop')"></button></div>
+  <div class="admin-layout">
+    <aside class="sidebar"><h3>Workspace</h3>
+      <button class="side-btn active" onclick="adminSection('overview',this)">Overview</button>
+      <button class="side-btn" onclick="adminSection('products',this)">Products</button>
+      <button class="side-btn" onclick="adminSection('categories',this)">Categories</button>
+      <button class="side-btn" onclick="adminSection('customers',this)">Customers</button>
+      <button class="side-btn" onclick="adminSection('orders',this)">Orders</button>
+      <button class="side-btn" onclick="adminSection('reports',this)">Reports</button>
+    </aside>
+    <section class="content">
+      <div id="adminOverview">
+        <div class="stats">
+          <div class="stat"><small>Products</small><strong id="statProducts">—</strong></div>
+          <div class="stat"><small>Categories</small><strong id="statCategories">—</strong></div>
+          <div class="stat"><small>Customers</small><strong id="statCustomers">—</strong></div>
+          <div class="stat"><small>Orders</small><strong id="statOrders">—</strong></div>
+        </div>
+        <div class="panel"><h3>Welcome to ShopEZ</h3><p class="muted">Use the workspace navigation to manage products, categories, customers, orders and reports.</p></div>
+      </div>
+      <div id="adminProducts" class="hidden">
+        <div class="section-head" style="margin-top:0"><h2>Products</h2><button class="primary" onclick="openProductForm()">+ Add product</button></div>
+        <div id="productForm" class="panel hidden">
+          <h3 id="productFormTitle">Add product</h3>
+          <div class="form-grid">
+            <input id="pId" class="field" placeholder="Product ID (e.g. prod_002)">
+            <input id="pTitle" class="field" placeholder="Product title">
+            <select id="pCategory" class="field"></select>
+            <input id="pPrice" class="field" type="number" min="0" placeholder="Price (₹)">
+            <input id="pQty" class="field" type="number" min="0" placeholder="Quantity">
+            <input id="pDescription" class="field" placeholder="Description">
+          </div>
+          <div class="toolbar"><button class="primary" onclick="saveProduct()">Save product</button><button class="small-btn" onclick="closeProductForm()">Cancel</button></div>
+        </div>
+        <div class="panel table-wrap"><table><thead><tr><th>ID</th><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="adminProductRows"></tbody></table></div>
+      </div>
+      <div id="adminCategories" class="hidden">
+        <div class="section-head" style="margin-top:0"><h2>Categories</h2></div>
+        <div class="panel"><div class="toolbar"><input id="newCategoryId" class="field" placeholder="Category ID (cat_002)"><input id="newCategoryName" class="field" placeholder="Category name"><button class="primary" onclick="addCategory()">Add category</button></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Actions</th></tr></thead><tbody id="categoryRows"></tbody></table></div></div>
+      </div>
+      <div id="adminCustomers" class="hidden"><div class="section-head" style="margin-top:0"><h2>Customers</h2></div><div class="panel table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Mobile</th><th>Credit limit</th><th>Credit used</th></tr></thead><tbody id="customerRows"></tbody></table></div></div>
+      <div id="adminOrders" class="hidden"><div class="section-head" style="margin-top:0"><h2>Orders</h2></div><div class="panel table-wrap"><table><thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Payment</th><th>Status</th></tr></thead><tbody id="orderRows"></tbody></table></div></div>
+      <div id="adminReports" class="hidden"><div class="section-head" style="margin-top:0"><h2>Reports</h2></div><div class="stats"><div class="stat"><small>All customers</small><strong id="reportCustomers">—</strong></div><div class="stat"><small>Current inventory units</small><strong id="reportStock">—</strong></div><div class="stat"><small>High stock items</small><strong id="reportHigh">—</strong></div><div class="stat"><small>Low stock items</small><strong id="reportLow">—</strong></div></div><div class="panel"><p class="muted">Quick inventory summary. Your detailed date-range sales reports remain available in the Reports API test page.</p><button class="small-btn" onclick="refreshAll()">Refresh report data</button></div></div>
+    </section>
+  </div>
+</main>
+
+
+<div id="checkoutModal" class="checkout-modal hidden" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+  <div class="checkout-card">
+    <div class="checkout-head"><div><div class="eyebrow" style="color:#777">Almost yours</div><h2 id="checkoutTitle">Checkout</h2></div><button class="small-btn" onclick="closeCheckout()" aria-label="Close checkout">✕</button></div>
+    <p class="muted">Enter delivery details and choose how you want to pay.</p>
+    <form id="checkoutForm" onsubmit="submitCheckout(event)">
+      <h3>Delivery details</h3>
+      <div class="checkout-grid">
+        <input id="checkoutName" class="field" placeholder="Full name" required maxlength="80">
+        <input id="checkoutEmail" class="field" type="email" placeholder="Email address" required>
+        <input id="checkoutMobile" class="field" type="tel" placeholder="Mobile number" required pattern="[0-9+() -]{8,18}">
+        <input id="checkoutCity" class="field" placeholder="City" required maxlength="80">
+        <textarea id="checkoutAddress" class="field" placeholder="House / street / delivery address" required maxlength="300" style="grid-column:1/-1;min-height:82px;resize:vertical"></textarea>
+      </div>
+      <h3 style="margin-top:22px">Payment method</h3>
+      <label class="payment-choice"><input type="radio" name="paymentMethod" value="Cash" checked><span><strong>Cash on delivery</strong><div class="muted">Pay in cash when your order is delivered.</div></span></label>
+      <label class="payment-choice"><input type="radio" name="paymentMethod" value="Credit"><span><strong>Customer credit</strong><div class="muted">Use your available ShopEZ credit limit.</div><div id="creditAvailability" class="credit-note">Enter your registered email to check credit availability.</div></span></label>
+      <div class="checkout-summary"><div style="display:flex;justify-content:space-between;gap:12px"><span>Order total</span><strong id="checkoutTotal">₹0</strong></div><p class="checkout-message">Cash orders are recorded as awaiting collection. Credit orders are recorded against the customer's credit account. No real card or UPI payment is processed.</p></div>
+      <div class="checkout-actions"><button type="button" class="small-btn" onclick="closeCheckout()">Back to bag</button><button id="confirmOrderButton" type="submit" class="primary">Confirm order</button></div>
+    </form>
+  </div>
+</div>
+
+<footer class="footer hidden" id="siteFooter"><strong>shopEZ.</strong><span>Thoughtful essentials. Everyday confidence.</span><span>© 2026 ShopEZ Demo</span></footer>
+<div id="toast" class="toast hidden"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

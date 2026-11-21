@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ShopEZ Payments API Test</title>
+</head>
+<body>
+
+    <h1>Payments API Test</h1>
+
+    <button onclick="createTestPayment()">Create Payment</button>
+    <button onclick="readTestPayment()">Read Payment</button>
+    <button onclick="readAllPayments()">Read All</button>
+    <button onclick="readCustomerPayments()">Customer Payments</button>
+    <button onclick="readOrderPayments()">Order Payments</button>
+
+    <pre id="result"></pre>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="./payments-api.js"></script>
+
+    <script>
+        const testPaymentId = "pay_001";
+
+        function showResult(data) {
+            document.getElementById("result").textContent =
+                JSON.stringify(data, null, 2);
+        }
+
+        async function createTestPayment() {
+            try {
+                const result = await PaymentsAPI.createPayment(
+                    testPaymentId,
+                    {
+                        order_id: "ord_001",
+                        customer_id: "cust_001",
+                        amount: 1798,
+                        payment_method: "Cash"
+                    }
+                );
+
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+
+        async function readTestPayment() {
+            try {
+                const result =
+                    await PaymentsAPI.getPayment(testPaymentId);
+
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+
+        async function readAllPayments() {
+            try {
+                const result = await PaymentsAPI.getAllPayments();
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+
+        async function readCustomerPayments() {
+            try {
+                const result =
+                    await PaymentsAPI.getPaymentsByCustomer("cust_001");
+
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+
+        async function readOrderPayments() {
+            try {
+                const result =
+                    await PaymentsAPI.getPaymentsByOrder("ord_001");
+
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ShopEZ Categories API Test</title>
+</head>
+<body>
+
+    <h1>Categories API Test</h1>
+
+    <button onclick="createTestCategory()">Create</button>
+    <button onclick="readTestCategory()">Read</button>
+    <button onclick="readAllCategories()">Read All</button>
+    <button onclick="updateTestCategory()">Update</button>
+    <button onclick="deleteTestCategory()">Delete</button>
+
+    <pre id="result"></pre>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="./categories-api.js"></script>
+
+    <script>
+        const testCategoryId = "cat_001";
+
+        function showResult(data) {
+            document.getElementById("result").textContent =
+                JSON.stringify(data, null, 2);
+        }
+
+        async function createTestCategory() {
+            try {
+                const result = await CategoriesAPI.createCategory(
+                    testCategoryId,
+                    {
+                        name: "Men's Fashion"
+                    }
+                );
+
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+
+        async function readTestCategory() {
+            try {
+                const result =
+                    await CategoriesAPI.getCategory(testCategoryId);
+
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+
+        async function readAllCategories() {
+            try {
+                const result = await CategoriesAPI.getAllCategories();
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+
+        async function updateTestCategory() {
+            try {
+                const result = await CategoriesAPI.updateCategory(
+                    testCategoryId,
+                    {
+                        name: "Men's Clothing"
+                    }
+                );
+
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+
+        async function deleteTestCategory() {
+            try {
+                const result =
+                    await CategoriesAPI.deleteCategory(testCategoryId);
+
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ShopEZ Reports API Test</title>
+</head>
+<body>
+
+    <h1>ShopEZ Reports API Test</h1>
+
+    <h2>Customer Reports</h2>
+    <button onclick="allCustomers()">All Customers</button>
+    <button onclick="topCustomers()">Top 10 Customers</button>
+    <button onclick="cashPurchases()">Cash Purchases</button>
+    <button onclick="creditPurchases()">Credit Purchases</button>
+
+    <h2>Inventory Reports</h2>
+    <button onclick="allInventory()">All Inventory</button>
+    <button onclick="categoryInventory()">Category Inventory</button>
+    <button onclick="highStock()">High Stock</button>
+    <button onclick="lowStock()">Low Stock</button>
+
+    <h2>Sales Reports</h2>
+    <button onclick="salesByDate()">Sales by Date</button>
+    <button onclick="cashSales()">Cash Sales</button>
+    <button onclick="creditSales()">Credit Sales</button>
+    <button onclick="categorySales()">Category Sales</button>
+    <button onclick="topItems()">Top 10 Items</button>
+    <button onclick="bottomItems()">Bottom 10 Items</button>
+
+    <pre id="result"></pre>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="./reports-api.js"></script>
+
+    <script>
+        const fromDate = "2026-01-01";
+        const toDate = "2026-12-31";
+
+        function showResult(data) {
+            document.getElementById("result").textContent =
+                JSON.stringify(data, null, 2);
+        }
+
+        async function runReport(callback) {
+            try {
+                const result = await callback();
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+
+        function allCustomers() {
+            runReport(() => ReportsAPI.getAllCustomerReport());
+        }
+
+        function topCustomers() {
+            runReport(() =>
+                ReportsAPI.getTop10Customers(fromDate, toDate)
+            );
+        }
+
+        function cashPurchases() {
+            runReport(() =>
+                ReportsAPI.getCashPurchaseReport(fromDate, toDate)
+            );
+        }
+
+        function creditPurchases() {
+            runReport(() =>
+                ReportsAPI.getCreditPurchaseReport(fromDate, toDate)
+            );
+        }
+
+        function allInventory() {
+            runReport(() => ReportsAPI.getAllInventoryReport());
+        }
+
+        function categoryInventory() {
+            runReport(() =>
+                ReportsAPI.getInventoryByCategory("cat_001")
+            );
+        }
+
+        function highStock() {
+            runReport(() => ReportsAPI.getHighStockReport());
+        }
+
+        function lowStock() {
+            runReport(() => ReportsAPI.getLowStockReport());
+        }
+
+        function salesByDate() {
+            runReport(() =>
+                ReportsAPI.getSalesByDate(fromDate, toDate)
+            );
+        }
+
+        function cashSales() {
+            runReport(() =>
+                ReportsAPI.getSalesByPaymentMethod(
+                    fromDate, toDate, "Cash"
+                )
+            );
+        }
+
+        function creditSales() {
+            runReport(() =>
+                ReportsAPI.getSalesByPaymentMethod(
+                    fromDate, toDate, "Credit"
+                )
+            );
+        }
+
+        function categorySales() {
+            runReport(() =>
+                ReportsAPI.getSalesByCategory(
+                    fromDate, toDate, "cat_001"
+                )
+            );
+        }
+
+        function topItems() {
+            runReport(() =>
+                ReportsAPI.getTop10SellingItems(fromDate, toDate)
+            );
+        }
+
+        function bottomItems() {
+            runReport(() =>
+                ReportsAPI.getBottom10SellingItems(fromDate, toDate)
+            );
+        }
+    </script>
+
+</body>
+</html>

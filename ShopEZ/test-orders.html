@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ShopEZ Orders API Test</title>
+</head>
+<body>
+
+    <h1>Orders API Test</h1>
+
+    <button onclick="createTestOrder()">Create Order</button>
+    <button onclick="readTestOrder()">Read Order</button>
+    <button onclick="readAllOrders()">Read All</button>
+    <button onclick="readCustomerOrders()">Customer History</button>
+    <button onclick="updateTestOrder()">Update Status</button>
+
+    <pre id="result"></pre>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="./orders-api.js"></script>
+
+    <script>
+        const testOrderId = "ord_001";
+
+        function showResult(data) {
+            document.getElementById("result").textContent =
+                JSON.stringify(data, null, 2);
+        }
+
+        async function createTestOrder() {
+            try {
+                const result = await OrdersAPI.createOrder(
+                    testOrderId,
+                    {
+                        customer_id: "cust_001",
+                        items: [
+                            {
+                                product_id: "prod_001",
+                                title: "Men's Black T-Shirt",
+                                quantity: 2,
+                                price: 899
+                            }
+                        ],
+                        total_amount: 1798,
+                        payment_method: "Cash"
+                    }
+                );
+
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+
+        async function readTestOrder() {
+            try {
+                const result = await OrdersAPI.getOrder(testOrderId);
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+
+        async function readAllOrders() {
+            try {
+                const result = await OrdersAPI.getAllOrders();
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+
+        async function readCustomerOrders() {
+            try {
+                const result =
+                    await OrdersAPI.getOrdersByCustomer("cust_001");
+
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+
+        async function updateTestOrder() {
+            try {
+                const result = await OrdersAPI.updateOrderStatus(
+                    testOrderId,
+                    "Confirmed"
+                );
+
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+    </script>
+
+</body>
+</html>

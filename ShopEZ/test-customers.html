@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ShopEZ Customers API Test</title>
+</head>
+<body>
+
+    <h1>Customers API Test</h1>
+
+    <button onclick="createTestCustomer()">Create</button>
+    <button onclick="readTestCustomer()">Read</button>
+    <button onclick="readAllCustomers()">Read All</button>
+    <button onclick="updateTestCustomer()">Update</button>
+    <button onclick="updateTestCreditLimit()">Update Credit Limit</button>
+    <button onclick="deleteTestCustomer()">Delete</button>
+
+    <pre id="result"></pre>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="./customers-api.js"></script>
+
+    <script>
+        const testCustomerId = "cust_001";
+
+        function showResult(data) {
+            document.getElementById("result").textContent =
+                JSON.stringify(data, null, 2);
+        }
+
+        async function createTestCustomer() {
+            try {
+                const result = await CustomersAPI.createCustomer(
+                    testCustomerId,
+                    {
+                        name: "John",
+                        email: "john@gmail.com",
+                        mob: "9876543210"
+                    }
+                );
+
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+
+        async function readTestCustomer() {
+            try {
+                const result =
+                    await CustomersAPI.getCustomer(testCustomerId);
+
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+
+        async function readAllCustomers() {
+            try {
+                const result = await CustomersAPI.getAllCustomers();
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+
+        async function updateTestCustomer() {
+            try {
+                const result = await CustomersAPI.updateCustomer(
+                    testCustomerId,
+                    {
+                        name: "John Smith",
+                        mob: "9876501234"
+                    }
+                );
+
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+
+        async function updateTestCreditLimit() {
+            try {
+                const result =
+                    await CustomersAPI.updateCreditLimit(
+                        testCustomerId,
+                        1000
+                    );
+
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+
+        async function deleteTestCustomer() {
+            try {
+                const result =
+                    await CustomersAPI.deleteCustomer(testCustomerId);
+
+                showResult(result);
+            } catch (error) {
+                showResult(error.response?.data || error.message);
+            }
+        }
+    </script>
+
+</body>
+</html>

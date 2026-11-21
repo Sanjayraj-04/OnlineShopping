@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ShopEZ Products API Test</title>
+</head>
+<body>
+
+    <h1>Products API Test</h1>
+
+    <button onclick="createTest()">Create</button>
+    <button onclick="readTest()">Read</button>
+    <button onclick="updateTest()">Update</button>
+    <button onclick="deleteTest()">Delete</button>
+
+    <pre id="result">Waiting for API request...</pre>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="./products-api.js"></script>
+
+    <script>
+        const productId = "prod_001";
+
+        function display(data) {
+            document.getElementById("result").textContent =
+                JSON.stringify(data, null, 2);
+        }
+
+        async function createTest() {
+            try {
+                const result = await ProductsAPI.createProduct(
+                    productId,
+                    {
+                        cat_id: "cat_001",
+                        title: "Men's Black T-Shirt",
+                        des: "Premium cotton oversized T-shirt",
+                        qty: 50,
+                        price: 799,
+                        active: true
+                    }
+                );
+                display(result);
+            } catch (error) {
+                display(error.message);
+            }
+        }
+
+        async function readTest() {
+            try {
+                display(await ProductsAPI.getProduct(productId));
+            } catch (error) {
+                display(error.message);
+            }
+        }
+
+        async function updateTest() {
+            try {
+                display(await ProductsAPI.updateProduct(productId, {
+                    price: 899,
+                    qty: 40
+                }));
+            } catch (error) {
+                display(error.message);
+            }
+        }
+
+        async function deleteTest() {
+            try {
+                display(await ProductsAPI.deleteProduct(productId));
+            } catch (error) {
+                display(error.message);
+            }
+        }
+    </script>
+
+</body>
+</html>
